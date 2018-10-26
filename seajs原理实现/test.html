@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    function show() {
+      require('a');
+      require('b');
+    }
+
+    let str = show.toString();
+    str = str.substring(str.indexOf('{')+1,str.lastIndexOf('}'));
+    let arr = str.match(/require\([^\(\)]+\)/g);
+    console.log(arr)
+
+//    arr = str.match(/require\(^\'\)/g);
+</script>
+</body>
+</html>

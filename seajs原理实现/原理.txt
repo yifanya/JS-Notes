@@ -1,0 +1,9 @@
+1.在js文件里面（模块里面）
+define(function(require,exports,module){
+    require('xxxx.js')      <=   难点
+})
+
+2.在html文件里面
+sea.use("xxxx.js",functin(mod){
+
+})
