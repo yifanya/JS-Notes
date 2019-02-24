@@ -16,22 +16,6 @@ function Application() {
   registMethods(http.METHODS, Application.prototype);
 }
 
-// Application.prototype.get = function (path, middleware, handler) {
-//   if(middleware && typeof middleware === 'function') {
-//     if(!handler) {
-//       let temp = handler;
-//       handler = middleware;
-//       middleware = temp;
-//     }
-//   }
-//   routes.push({
-//     path,
-//     method: 'get',
-//     handler,
-//     middleware
-//   })
-// }
-
 function registMethods(methods, target) {
   methods.forEach(method => {
     target[method.toLocaleLowerCase()] = function (path, middleware, handler) {
@@ -104,8 +88,6 @@ Application.prototype.listen = function (...args) {
           handler(req, res);
         }
         else {
-          // console.log(`cannot ${req.method} ${req.url}`)
-          // res.end(`cannot ${req.method} ${req.url}`)
           next();
         }
       }

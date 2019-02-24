@@ -12,7 +12,7 @@ app.get('/name', function(req, res) {
 })
 
 app.post('/age', function(req, res) {
-  res.end('我24了')
+  res.end('我23了')
 })
 
 app.all('*', function (req, res) {
