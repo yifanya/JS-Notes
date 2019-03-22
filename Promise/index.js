@@ -68,23 +68,3 @@ class MyPromise {
     })
   }
 }
-
-let promise = new MyPromise((resolve, reject) => {
-  resolve('111');
-}).then((data) => {
-  console.log('1:data = ', data);
-  return new MyPromise(resolve => {
-    setTimeout(() => {
-      resolve('1 then result')
-    }, 1000);
-  })
-}).then(data => {
-  console.log('2:data = ', data)
-  return new MyPromise(resolve => {
-    setTimeout(() => {
-      resolve('2 then result')
-    }, 1000);
-  })
-}).then(data => {
-  console.log('3:data = ', data)
-})
