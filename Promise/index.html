@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script src="./test.js"></script>
+  <script>
+    let queue = [];
+
+    function test() {
+      let data = 'test data';
+      let success = () => {
+        console.log(data)
+      }
+      let error = () => {
+        console.log(data)
+      }
+      queue.push(success, error);
+    }
+
+    test();
+
+    queue.forEach(item => item())
+  </script>
+</body>
+</html>
