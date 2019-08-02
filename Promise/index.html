@@ -7,24 +7,36 @@
   <title>Document</title>
 </head>
 <body>
-  <script src="./test.js"></script>
-  <script>
-    let queue = [];
+<script src="./index.js"></script>
+<script>
+let p = new Promise((resolve, reject) => {
+  // resolve(1234);
+  throw new Error('aaa');
+})
+// let p = new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(1234);
+//   }, 1000)
+// })
 
-    function test() {
-      let data = 'test data';
-      let success = () => {
-        console.log(data)
-      }
-      let error = () => {
-        console.log(data)
-      }
-      queue.push(success, error);
-    }
+p.then(data => {
+  console.log(data);
+}, err => {
+  console.log(err);
+})
+.then(data => {
+  console.log(data)
+})
 
-    test();
+p.then(data => {
+  console.log(data);
+}, err => {
+  console.log(err);
+})
+.then(data => {
+  console.log(data)
+})
 
-    queue.forEach(item => item())
-  </script>
+</script>
 </body>
 </html>

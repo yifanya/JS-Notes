@@ -1,101 +1,20 @@
 const http = require('http');
 const url = require('url');
+const Router = require('./router');
 
+const app = {};
 
-let routes = [
-  {
-    path: '*',
-    method: '*',
-    handler: function(req, res) {
-      res.end(`can ${req.method} ${req.url}`)
-    }
-  }
-]
-
-function Application() {
-  registMethods(http.METHODS, Application.prototype);
+app.listen = function () {
+  let server = http.createServer(this);
+  return server.listen.apply(server, arguments);
 }
 
-function registMethods(methods, target) {
-  methods.forEach(method => {
-    target[method.toLocaleLowerCase()] = function (path, middleware, handler) {
-      if (middleware && typeof middleware === 'function') {
-        if (!handler) {
-          let temp = handler;
-          handler = middleware;
-          middleware = temp;
-        }
-      }
-      routes.push({
-        path,
-        method: method.toLocaleLowerCase(),
-        handler,
-        middleware
-      })
-    }
-  });
-
-  target.all = function (path, middleware, handler) {
-    if (middleware && typeof middleware === 'function') {
-      if (!handler) {
-        let temp = handler;
-        handler = middleware;
-        middleware = temp;
-      }
-    }
-    routes.push({
-      path,
-      method: 'all',
-      handler,
-      middleware
-    })
-  }
+app.init = function () {
+  this._router = new Router();
 }
 
-Application.prototype.use = function (path, handler) {
-  if(!handler || typeof path === 'function') {
-    handler = path;
-    path = '/';
-  }
-  routes.push({
-    method: 'middle',
-    path,
-    handler
-  })
+app.handle = function (req, res, callback) {
+  this._router.handle(req, res, callback);
 }
 
-Application.prototype.listen = function (...args) {
-  const server = http.createServer((req, res) => {
-    let index = 0;
-    let m = req.method.toLocaleLowerCase();
-    let { pathname } = url.parse(req.url, true);
-
-    function next(err) {
-      if (index === routes.length) {
-        console.log(`cannot ${req.method} ${req.url}`);
-        return res.end(`cannot ${req.method} ${req.url}`)
-      }
-      let { path, handler, method } = routes[index++];
-      if( method === 'middle') {
-        if (path === '/' || path === pathname || pathname.startsWith(path + '/')) {
-          handler(req, res, next)
-        } else {
-          next();
-        }
-      }
-      else {
-        if ((path === pathname || path === '*') && (m === method || method === 'all')) {
-          handler(req, res);
-        }
-        else {
-          next();
-        }
-      }
-    }
-    next();
-  })
-
-  server.listen(...args)
-}
-
-module.exports = Application;
+module.exports = app;

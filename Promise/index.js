@@ -4,9 +4,9 @@
  * 3. promise then方法内，你只要抛出错误那么就会在下一个then的失败回调
  * 4. promise then方法内，如果返回值是一个promise对象，则采用他的状态
  */
-module.exports =  class Promise {
+class Promise {
   constructor (executor) {
-    this.value = null;
+    this.value;
     this.reason = null;
     this.state = 'PENDING';
     this._resolve = this._resolve.bind(this);
@@ -25,30 +25,33 @@ module.exports =  class Promise {
       this.state = 'fulfilled';
       let cb
       while (cb = this.successQueue.shift()) {
-        cb()
+        !function (cb) {
+          setTimeout(() => cb(value) , 0)
+        }(cb)
       }
     }
   }
   _reject (reason) {
     if (this.state === 'PENDING') {
-      this.reason = reason;
+      this.value = reason;
       this.state = 'rejected';
       let cb
       while (cb = this.errorQueue.shift()) {
-        cb()
+        !function (cb) {
+          setTimeout(() => cb(reason) , 0)
+        }(cb)
       }
     }
   }
 
   then (success, error) {
-    // console.log('then')
-    let { state, value, reason, successQueue, errorQueue } = this;
+    let { state, value, successQueue, errorQueue } = this;
     return new Promise(function (resolve, reject) {
-      let fulfilled = () => {
+      let fulfilled = (val) => {
         try {
-          if (typeof success !== 'function') resolve(value);
+          if (typeof success !== 'function') resolve(val);
           else {
-            let result = success(value);
+            let result = success(val);
             if (result instanceof Promise) {
               result.then(result)
             }
@@ -60,26 +63,28 @@ module.exports =  class Promise {
           reject(error);
         }
       }
-      let rejected = () => {
+      let rejected = (err) => {
         try {
-          if (typeof error !== 'function') resolve(value);
+          if (typeof error !== 'function') resolve(err);
           else {
-            let result = error(reason);
+            let result = error(err);
             if (result instanceof Promise) {
               result.then(resolve)
             }
             else {
-              resolve(resolve)
+              resolve(result)
             }
           }
         } catch (error) {
           reject(error);
         }
       }
-      
+      // console.log(state);
       switch (state) {
-        case 'fulfilled': fulfilled(); break;
-        case 'rejected': rejected(); break;
+        case 'fulfilled': 
+          setTimeout(() => fulfilled(value), 0); break;
+        case 'rejected': 
+          setTimeout(() => rejected(value), 0); break;
         case 'PENDING': 
           successQueue.push(fulfilled);
           errorQueue.push(rejected);
@@ -88,15 +93,3 @@ module.exports =  class Promise {
     })
   }
 }
-
-// new Promise((resolve, reject) => {
-//   resolve(1234);
-//   reject(5678);
-//   throw new Error('error');
-// }).then(data => {
-//   console.log(data);
-// }, err => {
-//   console.log(err);
-// }).then(data => {
-//   console.log(data)
-// })
