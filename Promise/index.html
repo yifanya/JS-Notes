@@ -10,8 +10,10 @@
 <script src="./index.js"></script>
 <script>
 let p = new Promise((resolve, reject) => {
-  // resolve(1234);
-  throw new Error('aaa');
+  setTimeout(() => {
+    resolve(1234);
+  }, 1000)
+  // throw new Error('aaa');
 })
 // let p = new Promise((resolve, reject) => {
 //   setTimeout(() => {
@@ -21,6 +23,7 @@ let p = new Promise((resolve, reject) => {
 
 p.then(data => {
   console.log(data);
+  return 100;
 }, err => {
   console.log(err);
 })
@@ -30,6 +33,7 @@ p.then(data => {
 
 p.then(data => {
   console.log(data);
+  return 100;
 }, err => {
   console.log(err);
 })
